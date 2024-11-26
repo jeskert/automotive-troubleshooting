@@ -11,8 +11,6 @@ import {
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createTicket } from "./graphql/mutations";
-import { FileUploader } from "@aws-amplify/ui-react-storage";
-import { processFile } from "./utils";
 
 
 const client = generateClient();
