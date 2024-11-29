@@ -11,6 +11,9 @@ import {
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createTicket } from "./graphql/mutations";
+import { FileUploader } from '@aws-amplify/ui-react-storage';
+import '@aws-amplify/ui-react/styles.css';
+
 
 
 const client = generateClient();
@@ -31,12 +34,14 @@ export default function TicketCreateForm(props) {
     content: "",
     status: "",
     resolverId: "",
+    imagePaths: [],
   };
   const [userId, setUserId] = React.useState(initialValues.userId);
   const [title, setTitle] = React.useState(initialValues.title);
   const [content, setContent] = React.useState(initialValues.content);
   const [status, setStatus] = React.useState(initialValues.status);
   const [resolverId, setResolverId] = React.useState(initialValues.resolverId);
+  const [imagePaths, setImagePaths] = React.useState(initialValues.imagePaths);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setUserId(initialValues.userId);
@@ -70,6 +75,15 @@ export default function TicketCreateForm(props) {
     setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
     return validationResponse;
   };
+  const handleFileUploadSuccess = ({ key }) => {
+    console.log(key)
+    setImagePaths(prev => [...prev, key]);
+  };
+  
+  const handleFileRemove = ({ key }) => {
+    console.log(key)
+    setImagePaths(prev => prev.filter(k => k !== key));
+  };
   return (
     <Grid
       as="form"
@@ -84,6 +98,7 @@ export default function TicketCreateForm(props) {
           content,
           status,
           resolverId,
+          imagePaths,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -306,6 +321,14 @@ export default function TicketCreateForm(props) {
         hasError={errors.resolverId?.hasError}
         {...getOverrideProps(overrides, "resolverId")}
       ></TextField>
+      <FileUploader 
+        acceptedFileTypes={['image/*']}
+        path="ticket-pictures/"
+        maxFileCount={10}
+        isResumable
+        onUploadSuccess={handleFileUploadSuccess}
+        onFileRemove={handleFileRemove}
+      />
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

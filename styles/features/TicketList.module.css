@@ -1,0 +1,42 @@
+.container {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.tableWrapper {
+  @apply overflow-x-auto;
+}
+
+.table {
+  @apply w-full min-w-[1000px];
+}
+
+.thead {
+  @apply bg-gray-50 border-b border-gray-200;
+}
+
+.th {
+  @apply px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  @apply first:pl-8 last:pr-8;
+}
+
+.tbody {
+  @apply bg-white divide-y divide-gray-200;
+}
+
+.tr {
+  @apply hover:bg-gray-50 transition-colors duration-200;
+}
+
+.td {
+  @apply px-6 py-4 text-sm text-gray-600 whitespace-nowrap;
+  @apply first:pl-8 last:pr-8;
+}
+
+.actions {
+  @apply flex items-center gap-2;
+}
+
+.actionButton {
+  @apply p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg;
+  @apply transition-colors duration-200;
+} 
