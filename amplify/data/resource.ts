@@ -7,7 +7,7 @@ const schema = a.schema({
             userId: a.integer(),
             title: a.string(),
             content: a.string(),
-            status: a.enum(['NEW', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']),
+            status: a.enum(['NEW', 'IN_PROGRESS', 'RESOLVED', 'REJECTED', 'CLOSED']),
             resolverId: a.integer(),
             imagePaths: a.string().array(),
         }).authorization(allow => [allow.owner()]),

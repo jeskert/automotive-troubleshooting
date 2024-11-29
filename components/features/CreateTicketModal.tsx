@@ -26,7 +26,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
     const [formData, setFormData] = useState<{
         title: string;
         content: string;
-        status: 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+        status: 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
         userId: number;
         resolverId: number;
         imagePaths: string[];
@@ -145,7 +145,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                         </div>
 
                         {/* Status */}
-                        <div className={styles.inputGroup}>
+                        {/* <div className={styles.inputGroup}>
                             <label htmlFor="status" className={styles.label}>
                                 Status
                             </label>
@@ -154,7 +154,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                                 value={formData.status}
                                 onChange={(e) => setFormData(prev => ({
                                     ...prev,
-                                    status: e.target.value as 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
+                                    status: e.target.value as 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED'
                                 }))}
                                 className={styles.select}
                             >
@@ -163,7 +163,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                                 <option value="RESOLVED">Resolved</option>
                                 <option value="CLOSED">Closed</option>
                             </select>
-                        </div>
+                        </div> */}
 
                         {/* Image Upload */}
                         <div className={styles.inputGroup}>
