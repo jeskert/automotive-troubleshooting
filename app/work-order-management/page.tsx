@@ -23,7 +23,7 @@ export default function WorkOrderManagement() {
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600"
                 >
                     <Plus size={20} />
-                    Create Work Order
+                    Create Ticket
                 </button>
             </div>
 

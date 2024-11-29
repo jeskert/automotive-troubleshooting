@@ -5,7 +5,7 @@ import styles from '@/styles/features/CreateTicketModal.module.css'
 import { generateClient } from '@aws-amplify/api'
 import { FileUploader } from '@aws-amplify/ui-react-storage'
 import { FileText, X } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import '@aws-amplify/ui-react/styles.css';
 
@@ -13,12 +13,14 @@ import '@aws-amplify/ui-react/styles.css';
 const client = generateClient<Schema>()
 
 interface CreateTicketModalProps {
-    isOpen: boolean
-    onClose: () => void
-    onSuccess?: () => void
+    isOpen: boolean;
+    onClose: () => void;
+    ticket?: Schema["Ticket"]["type"] | null;
+    mode?: 'create' | 'edit';
+    onSuccess?: () => void;
 }
 
-export default function CreateTicketModal({ isOpen, onClose, onSuccess }: CreateTicketModalProps) {
+export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'create', onSuccess }: CreateTicketModalProps) {
     const [imagePaths, setImagePaths] = React.useState<string[]>([]);
 
     const [formData, setFormData] = useState<{
@@ -39,6 +41,20 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }: Create
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    useEffect(() => {
+        if (ticket && mode === 'edit') {
+            setFormData({
+                title: ticket.title ?? '',
+                content: ticket.content ?? '',
+                status: ticket.status ?? 'NEW',
+                userId: ticket.userId ?? 1,
+                resolverId: ticket.resolverId ?? 1,
+                imagePaths: ticket.imagePaths?.filter((path): path is string => path !== null) ?? []
+            });
+            setImagePaths(ticket.imagePaths?.filter((path): path is string => path !== null) ?? []);
+        }
+    }, [ticket, mode]);
+
     if (!isOpen) return null
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,13 +62,20 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }: Create
         setIsSubmitting(true)
 
         try {
-            await client.models.Ticket.create({
-                ...formData
-            })
+            if (mode === 'edit' && ticket?.id) {
+                await client.models.Ticket.update({
+                    id: ticket.id,
+                    ...formData
+                });
+            } else {
+                await client.models.Ticket.create({
+                    ...formData
+                });
+            }
             onSuccess?.()
             onClose()
         } catch (error) {
-            console.error('Error creating ticket:', error)
+            console.error('Error creating/updating ticket:', error)
         } finally {
             setIsSubmitting(false)
         }
@@ -76,7 +99,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }: Create
                 <div className={styles.header}>
                     <h2 className={styles.title}>
                         <FileText size={20} />
-                        Create New Ticket
+                        {mode === 'edit' ? 'Edit Ticket' : 'Create New Ticket'}
                     </h2>
                     <button
                         onClick={onClose}
@@ -169,7 +192,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }: Create
                             disabled={isSubmitting}
                             className={styles.submitButton}
                         >
-                            {isSubmitting ? 'Creating...' : 'Create Ticket'}
+                            {isSubmitting ? (mode === 'edit' ? 'Updating...' : 'Creating...') : (mode === 'edit' ? 'Update Ticket' : 'Create Ticket')}
                         </button>
                     </div>
                 </form>

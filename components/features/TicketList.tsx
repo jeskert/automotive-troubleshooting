@@ -7,6 +7,7 @@ import { Edit2, MoreVertical, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {Amplify} from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
+import CreateTicketModal from "./CreateTicketModal";
 
 Amplify.configure(outputs);
 
@@ -14,6 +15,9 @@ const client = generateClient<Schema>();
 
 export default function TicketList() {
     const [tickets, setTickets] = useState<Array<Schema["Ticket"]["type"]>>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState<Schema["Ticket"]["type"] | null>(null);
+
 
     function deleteTicket(id: string | null | undefined) {
         if (!id) return;
@@ -29,6 +33,16 @@ export default function TicketList() {
     useEffect(() => {
         listTickets();
     }, []);
+
+    function handleEditClick(ticket: Schema["Ticket"]["type"]) {
+        setSelectedTicket(ticket);
+        setIsModalOpen(true);
+    }
+
+    function handleModalClose() {
+        setIsModalOpen(false);
+        setSelectedTicket(null);
+    }
 
     return (
         <div className={styles.container}>
@@ -56,7 +70,7 @@ export default function TicketList() {
                                 <td className={styles.td}>{ticket.createdAt}</td>
                                 <td className={styles.td}>
                                     <div className={styles.actions}>
-                                        <button className={styles.actionButton}>
+                                        <button className={styles.actionButton} onClick={() => handleEditClick(ticket)}>
                                             <Edit2 size={16} />
                                         </button>
                                         <button className={styles.actionButton} onClick={() => deleteTicket(ticket.id)}>
@@ -72,6 +86,12 @@ export default function TicketList() {
                     </tbody>
                 </table>
             </div>
+            <CreateTicketModal 
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                ticket={selectedTicket}
+                mode="edit"
+            />
         </div>
     )
 } 
