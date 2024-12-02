@@ -1,15 +1,17 @@
+/* Layout Container */
 .layout {
-  @apply min-h-screen bg-gray-100;
+  display: flex;
+  min-height: 100vh;
 }
 
+/* Main Content */
 .main {
-  @apply ml-64 min-h-screen p-8;  /* 64 = sidebar width (w-64) */
-  @apply transition-all duration-300 ease-in-out;
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  margin-left: 240px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .main {
-    @apply ml-0;
-  }
-} 
+.mainCollapsed {
+  margin-left: 60px; /* Adjusted to match the collapsed sidebar width */
+}

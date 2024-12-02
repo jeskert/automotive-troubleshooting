@@ -3,7 +3,7 @@
 import { Schema } from '@/amplify/data/resource';
 import styles from '@/styles/layout/StatusCards.module.css'
 import { generateClient } from 'aws-amplify/api';
-import { CheckCircle, Clock, RefreshCw, XCircle } from 'lucide-react'
+import {CheckCircle, Grid2X2Icon, RefreshCw, XCircle} from 'lucide-react'
 import { useEffect, useState } from 'react';
 
 const client = generateClient<Schema>();
@@ -12,28 +12,28 @@ export default function StatusCards() {
     const [tickets, setTickets] = useState<Array<Schema["Ticket"]["type"]>>([]);
     const [stats, setStats] = useState([
         {
-            label: 'Overall',
+            label: '总计',
             count: 0,
-            icon: Clock,
+            icon: Grid2X2Icon,
             color: 'bg-blue-500/10',
             textColor: 'text-blue-500'
         },
         {
-            label: 'In Progress',
+            label: '进行中',
             count: 0,
             icon: RefreshCw,
             color: 'bg-cyan-500/10',
             textColor: 'text-cyan-500'
         },
         {
-            label: 'Resolved',
+            label: '已解决',
             count: 0,
             icon: CheckCircle,
             color: 'bg-teal-500/10',
             textColor: 'text-teal-500'
         },
         {
-            label: 'Rejected',
+            label: '已拒绝',
             count: 0,
             icon: XCircle,
             color: 'bg-purple-500/10',
@@ -52,10 +52,10 @@ export default function StatusCards() {
 
     function updateStats(tickets: Array<Schema["Ticket"]["type"]>) {
         const initialStats = [
-            { label: 'Overall', count: 0, icon: Clock, color: 'bg-blue-500/10', textColor: 'text-blue-500' },
-            { label: 'In Progress', count: 0, icon: RefreshCw, color: 'bg-cyan-500/10', textColor: 'text-cyan-500' },
-            { label: 'Resolved', count: 0, icon: CheckCircle, color: 'bg-teal-500/10', textColor: 'text-teal-500' },
-            { label: 'Rejected', count: 0, icon: XCircle, color: 'bg-purple-500/10', textColor: 'text-purple-500' }
+            { label: '总计', count: 0, icon: Grid2X2Icon, color: 'bg-blue-500/10', textColor: 'text-blue-500' },
+            { label: '进行中', count: 0, icon: RefreshCw, color: 'bg-cyan-500/10', textColor: 'text-cyan-500' },
+            { label: '已解决', count: 0, icon: CheckCircle, color: 'bg-teal-500/10', textColor: 'text-teal-500' },
+            { label: '已拒绝', count: 0, icon: XCircle, color: 'bg-purple-500/10', textColor: 'text-purple-500' }
         ];
 
         const updatedStats = tickets.reduce((acc, ticket) => {

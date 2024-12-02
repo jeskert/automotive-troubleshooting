@@ -1,0 +1,73 @@
+/* TicketDetail.module.css */
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Make the container take full width */
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Reduce gap between fields */
+    width: 45%; /* Adjust width to accommodate the text area */
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduce gap between label and value */
+}
+
+.label {
+    font-weight: bold;
+    min-width: 120px; /* Ensure labels are aligned */
+}
+
+.value {
+    flex-grow: 1;
+}
+
+/* Adjust StorageImage styles */
+.field img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 5px; /* Add some margin below images */
+}
+
+/* Optional: Add a grid layout for images */
+.images-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust based on your needs */
+    gap: 10px; /* Gap between images */
+    margin-top: 10px; /* Margin above images */
+}
+
+.textAreaContainer {
+    width: 45%; /* Adjust width to accommodate the text area */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.textArea {
+    width: 100%;
+    height: 300px; /* Adjust height as needed */
+    resize: vertical; /* Allow vertical resizing */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}

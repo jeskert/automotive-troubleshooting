@@ -1,25 +1,56 @@
+/* Container for all cards */
 .container {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6;
-  @apply mb-8;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #f4f5f7; /* Light background color */
 }
 
+/* Individual card */
 .card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200;
-  @apply p-6;
+  flex: 1 1 calc(25% - 20px); /* Three cards per row with spacing */
+  max-width: 300px;
+  background-color: #fff; /* White background for cards */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for cards */
+  padding: 20px;
+  transition: transform 0.3s ease; /* Smooth transition for hover effect */
 }
 
+.card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+}
+
+/* Card header containing icon and count */
 .cardHeader {
-  @apply flex items-center justify-between mb-4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
+/* Icon wrapper with background color */
 .iconWrapper {
-  @apply p-3 rounded-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
+/* Count number */
 .count {
-  @apply text-2xl font-bold text-gray-900;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
 }
 
+/* Label below the count */
 .label {
-  @apply text-sm font-medium text-gray-600;
-} 
+  font-size: 1em;
+  color: #666;
+  text-align: center;
+}

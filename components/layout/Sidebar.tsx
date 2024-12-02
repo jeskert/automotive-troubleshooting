@@ -5,21 +5,38 @@ import {
     ClipboardList,
     FileText,
     LayoutDashboard,
-    Menu
+    Menu,
+    UserCircle2,
+    LogOut,
+    Settings
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function Sidebar() {
+interface SidebarProps {
+    onCollapseChange?: (collapsed: boolean) => void
+}
+
+export default function Sidebar({ onCollapseChange }: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const pathname = usePathname()
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Overview', href: '/' },
-        { icon: ClipboardList, label: 'Work Order Management', href: '/work-order-management' },
-        { icon: FileText, label: 'My Tasks', href: '/my-tasks' },
+        { icon: LayoutDashboard, label: '工单管理', href: '/' },
     ]
+
+    const user = {
+        name: '张三',
+        avatar: '/images/img.png'
+    }
+
+    useEffect(() => {
+        if (onCollapseChange) {
+            onCollapseChange(isCollapsed)
+        }
+    }, [isCollapsed, onCollapseChange])
 
     return (
         <>
@@ -44,11 +61,11 @@ export default function Sidebar() {
                 {/* Logo */}
                 <div className={styles.logo}>
                     <img
-                        src="https://picsum.photos/32"
+                        src="/images/img.png"
                         alt="Logo"
                         className={styles.logoImage}
                     />
-                    {!isCollapsed && <span className={styles.logoText}>Dashboard</span>}
+                    {!isCollapsed && <span className={styles.logoText}></span>}
                 </div>
 
                 {/* Navigation */}
@@ -61,13 +78,35 @@ export default function Sidebar() {
                                 href={item.href}
                                 className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                             >
-                                <item.icon className={styles.navIcon} />
+                                <item.icon className={`${styles.navIcon} ${isCollapsed ? styles.navIconCollapsed : ''}`} />
                                 {!isCollapsed && <span className={styles.navText}>{item.label}</span>}
                             </Link>
                         )
                     })}
                 </nav>
+
+                {/* User Info */}
+                <div className={styles.userInfo} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    <img
+                        src={user.avatar}
+                        alt="User Avatar"
+                        className={styles.userAvatar}
+                    />
+                    {!isCollapsed && <span className={styles.userName}>{user.name}</span>}
+                    {isDropdownOpen && (
+                        <div className={styles.dropdown}>
+                            <Link href="/profile" className={styles.dropdownItem}>
+                                <Settings className={styles.dropdownIcon} />
+                                <span>个人中心</span>
+                            </Link>
+                            <button className={styles.dropdownItem} onClick={() => console.log('Logout')}>
+                                <LogOut className={styles.dropdownIcon} />
+                                <span>退出</span>
+                            </button>
+                        </div>
+                    )}
+                </div>
             </aside>
         </>
     )
-} 
+}

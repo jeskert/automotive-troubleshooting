@@ -9,7 +9,6 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import '@aws-amplify/ui-react/styles.css';
 
-
 const client = generateClient<Schema>()
 
 interface CreateTicketModalProps {
@@ -93,13 +92,13 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
     };
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.container}>
+        <div className={`${styles.overlay} ${isOpen ? styles.visible : ''}`}>
+            <div className={`${styles.container} ${isOpen ? styles.visible : ''}`}>
                 {/* Header */}
                 <div className={styles.header}>
                     <h2 className={styles.title}>
                         <FileText size={20} />
-                        {mode === 'edit' ? 'Edit Ticket' : 'Create New Ticket'}
+                        {mode === 'edit' ? '编辑工单' : '创建工单'}
                     </h2>
                     <button
                         onClick={onClose}
@@ -115,7 +114,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                         {/* Title */}
                         <div className={styles.inputGroup}>
                             <label htmlFor="title" className={styles.label}>
-                                Title
+                                标题
                             </label>
                             <input
                                 type="text"
@@ -123,7 +122,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                                 value={formData.title}
                                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                                 className={styles.input}
-                                placeholder="Enter ticket title"
+                                placeholder="输入工单标题"
                                 required
                             />
                         </div>
@@ -131,7 +130,7 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                         {/* Content */}
                         <div className={styles.inputGroup}>
                             <label htmlFor="content" className={styles.label}>
-                                Description
+                                详情
                             </label>
                             <textarea
                                 id="content"
@@ -139,31 +138,10 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                                 rows={4}
                                 className={styles.textarea}
-                                placeholder="Enter ticket description"
+                                placeholder="输入详细描述..."
                                 required
                             />
                         </div>
-
-                        {/* Status */}
-                        {/* <div className={styles.inputGroup}>
-                            <label htmlFor="status" className={styles.label}>
-                                Status
-                            </label>
-                            <select
-                                id="status"
-                                value={formData.status}
-                                onChange={(e) => setFormData(prev => ({
-                                    ...prev,
-                                    status: e.target.value as 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED'
-                                }))}
-                                className={styles.select}
-                            >
-                                <option value="NEW">New</option>
-                                <option value="IN_PROGRESS">In Progress</option>
-                                <option value="RESOLVED">Resolved</option>
-                                <option value="CLOSED">Closed</option>
-                            </select>
-                        </div> */}
 
                         {/* Image Upload */}
                         <div className={styles.inputGroup}>
@@ -185,18 +163,18 @@ export default function CreateTicketModal({ isOpen, onClose, ticket, mode = 'cre
                             onClick={onClose}
                             className={styles.cancelButton}
                         >
-                            Cancel
+                            取消
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
                             className={styles.submitButton}
                         >
-                            {isSubmitting ? (mode === 'edit' ? 'Updating...' : 'Creating...') : (mode === 'edit' ? 'Update Ticket' : 'Create Ticket')}
+                            {isSubmitting ? (mode === 'edit' ? 'Updating...' : 'Creating...') : (mode === 'edit' ? '更新工单' : '创建工单')}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     )
-} 
+}
