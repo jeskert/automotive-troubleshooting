@@ -14,7 +14,7 @@ const schema = a.schema({
     IngestionTask: a
         .model({
             id: a.id(),
-            status: a.enum(['IN_PROGRESS', 'COMPLETED', 'ERROR']),
+            status: a.enum(['NEW', 'IN_PROGRESS', 'COMPLETED', 'ERROR']),
             imagePaths: a.string().array(),
         }).authorization(allow => [allow.owner()]),
 

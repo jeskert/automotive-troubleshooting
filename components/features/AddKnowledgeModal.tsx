@@ -22,10 +22,10 @@ export default function AddKnowledgeModal({isOpen, onClose, ingestionTask, onSuc
     const [imagePaths, setImagePaths] = React.useState<string[]>([]);
 
     const [formData, setFormData] = useState<{
-        status: 'IN_PROGRESS' | 'COMPLETED' | 'ERROR';
+        status: 'NEW' | 'IN_PROGRESS' | 'COMPLETED' | 'ERROR';
         imagePaths: string[];
     }>({
-        status: 'IN_PROGRESS',
+        status: 'NEW',
         imagePaths: []
     })
 
@@ -34,13 +34,13 @@ export default function AddKnowledgeModal({isOpen, onClose, ingestionTask, onSuc
     useEffect(() => {
         if (ingestionTask) {
             setFormData({
-                status: ingestionTask.status ?? 'IN_PROGRESS',
+                status: ingestionTask.status ?? 'NEW',
                 imagePaths: ingestionTask.imagePaths?.filter((path): path is string => path !== null) ?? []
             });
             setImagePaths(ingestionTask.imagePaths?.filter((path): path is string => path !== null) ?? []);
         } else {
             setFormData({
-                status: 'IN_PROGRESS',
+                status: 'NEW',
                 imagePaths: []
             });
             setImagePaths([]);

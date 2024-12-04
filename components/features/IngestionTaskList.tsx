@@ -6,7 +6,7 @@ import outputs from "@/amplify_outputs.json";
 import styles from '@/styles/features/TicketList.module.css';
 import {Amplify} from "aws-amplify";
 import {generateClient} from "aws-amplify/data";
-import {Trash2} from 'lucide-react';
+import {Play, Trash2} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import AddKnowledgeModal from "@/components/features/AddKnowledgeModal";
 
@@ -22,6 +22,14 @@ export default function IngestionTaskList() {
     function deleteTask(id: string | null | undefined) {
         if (!id) return;
         client.models.IngestionTask.delete({id});
+    }
+
+    function startTask(id: string | null | undefined) {
+        if (!id) return;
+        client.models.IngestionTask.update({
+            id,
+            status: "IN_PROGRESS",
+        });
     }
 
     function listIngestionTask() {
@@ -58,6 +66,10 @@ export default function IngestionTaskList() {
                                 <td className={styles.td}>{ingestionTask.createdAt}</td>
                                 <td className={styles.td}>
                                     <div className={styles.actions}>
+                                        <button className={styles.actionButton}
+                                                onClick={() => startTask(ingestionTask.id)}>
+                                            <Play size={16}/>
+                                        </button>
                                         <button className={styles.actionButton}
                                                 onClick={() => deleteTask(ingestionTask.id)}>
                                             <Trash2 size={16}/>
