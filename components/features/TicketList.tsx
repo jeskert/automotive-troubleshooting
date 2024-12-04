@@ -1,13 +1,13 @@
 // components/features/TicketList.tsx
 'use client'
 
-import type { Schema } from "@/amplify/data/resource";
+import type {Schema} from "@/amplify/data/resource";
 import outputs from "@/amplify_outputs.json";
 import styles from '@/styles/features/TicketList.module.css';
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { Edit2, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {Amplify} from "aws-amplify";
+import {generateClient} from "aws-amplify/data";
+import {Edit2, Trash2} from 'lucide-react';
+import {useEffect, useState} from 'react';
 import CreateTicketModal from "./CreateTicketModal";
 import TabLayout from "@/components/layout/TabLayout";
 import TicketDetail from "@/components/features/TicketDetail";
@@ -20,12 +20,15 @@ export default function TicketList() {
     const [tickets, setTickets] = useState<Array<Schema["Ticket"]["type"]>>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState<Schema["Ticket"]["type"] | null>(null);
-    const [tabs, setTabs] = useState<{ label: string; content: React.ReactNode }[]>([{ label: "工单列表", content: <div>Initial Content</div> }]);
+    const [tabs, setTabs] = useState<{ label: string; content: React.ReactNode }[]>([{
+        label: "工单列表",
+        content: <div>Initial Content</div>
+    }]);
     const [activeTab, setActiveTab] = useState("工单列表");
 
     function deleteTicket(id: string | null | undefined) {
         if (!id) return;
-        client.models.Ticket.delete({ id });
+        client.models.Ticket.delete({id});
     }
 
     function listTickets() {
@@ -55,7 +58,7 @@ export default function TicketList() {
         } else {
             const newTab = {
                 label: ticket.title || '', // 确保 label 始终为 string 类型
-                content: <TicketDetail ticket={ticket} />
+                content: <TicketDetail ticket={ticket}/>
             };
             setTabs([...tabs, newTab]);
             setActiveTab(newTab.label);
@@ -94,7 +97,8 @@ export default function TicketList() {
                                     </thead>
                                     <tbody className={styles.tbody}>
                                     {tickets.map((ticket) => (
-                                        <tr key={ticket.id} className={styles.tr} onClick={() => handleRowClick(ticket)}>
+                                        <tr key={ticket.id} className={styles.tr}
+                                            onClick={() => handleRowClick(ticket)}>
                                             <td className={styles.td}>{ticket.title}</td>
                                             <td className={styles.td}>{ticket.status}</td>
                                             <td className={styles.td}>{ticket.userId}</td>
@@ -102,11 +106,13 @@ export default function TicketList() {
                                             <td className={styles.td}>{ticket.createdAt}</td>
                                             <td className={styles.td}>
                                                 <div className={styles.actions}>
-                                                    <button className={styles.actionButton} onClick={() => handleEditClick(ticket)}>
-                                                        <Edit2 size={16} />
+                                                    <button className={styles.actionButton}
+                                                            onClick={() => handleEditClick(ticket)}>
+                                                        <Edit2 size={16}/>
                                                     </button>
-                                                    <button className={styles.actionButton} onClick={() => deleteTicket(ticket.id)}>
-                                                        <Trash2 size={16} />
+                                                    <button className={styles.actionButton}
+                                                            onClick={() => deleteTicket(ticket.id)}>
+                                                        <Trash2 size={16}/>
                                                     </button>
                                                 </div>
                                             </td>

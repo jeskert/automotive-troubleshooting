@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useState, useEffect } from 'react'
+import {ReactNode, useState} from 'react'
 import Sidebar from './Sidebar'
 import styles from '@/styles/layout/MainLayout.module.css'
 
@@ -8,7 +8,7 @@ interface MainLayoutProps {
     children: ReactNode
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({children}: MainLayoutProps) {
     const [isCollapsed, setIsCollapsed] = useState(false)
 
     // Function to handle sidebar collapse state change

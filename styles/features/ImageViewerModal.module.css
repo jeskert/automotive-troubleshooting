@@ -1,0 +1,39 @@
+/* styles/features/ImageViewerModal.module.css */
+.overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm;
+    @apply flex items-center justify-center p-4;
+    @apply z-50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.container {
+    @apply bg-white rounded-xl shadow-2xl w-full max-w-4xl;
+    @apply border border-gray-100;
+    @apply relative transform;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.closeButton {
+    @apply p-2 rounded-lg text-gray-400 hover:text-gray-600;
+    @apply hover:bg-gray-100/80 transition-colors;
+    @apply absolute top-4 right-4;
+}
+
+.image {
+    @apply max-w-full max-h-full;
+    @apply rounded-lg;
+}

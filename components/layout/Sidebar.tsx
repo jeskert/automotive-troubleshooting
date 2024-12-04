@@ -1,36 +1,27 @@
 'use client'
 
 import styles from '@/styles/layout/Sidebar.module.css'
-import {
-    ClipboardList,
-    FileText,
-    LayoutDashboard,
-    Menu,
-    UserCircle2,
-    LogOut,
-    Settings
-} from 'lucide-react'
+import {LayoutDashboard, LogOut, Menu, Settings, Book} from 'lucide-react' // 添加 Book 图标
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import {usePathname} from 'next/navigation'
+import {useEffect, useState} from 'react'
+import {useAuthenticator} from "@aws-amplify/ui-react";
 
 interface SidebarProps {
     onCollapseChange?: (collapsed: boolean) => void
 }
 
-export default function Sidebar({ onCollapseChange }: SidebarProps) {
+export default function Sidebar({onCollapseChange}: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const pathname = usePathname()
 
     const menuItems = [
-        { icon: LayoutDashboard, label: '工单管理', href: '/' },
+        {icon: LayoutDashboard, label: '工单管理', href: '/'},
+        {icon: Book, label: '知识库管理', href: '/knowledge-base'}, // 新增的知识库管理项
     ]
 
-    const user = {
-        name: '张三',
-        avatar: '/images/img.png'
-    }
+    const { user, signOut } = useAuthenticator((context) => [context.user]);
 
     useEffect(() => {
         if (onCollapseChange) {
@@ -55,7 +46,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                     className={styles.toggleButton}
                     onClick={() => setIsCollapsed(!isCollapsed)}
                 >
-                    <Menu size={20} />
+                    <Menu size={20}/>
                 </button>
 
                 {/* Logo */}
@@ -78,7 +69,8 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                                 href={item.href}
                                 className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                             >
-                                <item.icon className={`${styles.navIcon} ${isCollapsed ? styles.navIconCollapsed : ''}`} />
+                                <item.icon
+                                    className={`${styles.navIcon} ${isCollapsed ? styles.navIconCollapsed : ''}`}/>
                                 {!isCollapsed && <span className={styles.navText}>{item.label}</span>}
                             </Link>
                         )
@@ -88,19 +80,19 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                 {/* User Info */}
                 <div className={styles.userInfo} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     <img
-                        src={user.avatar}
+                        src={'/images/img.png'}
                         alt="User Avatar"
                         className={styles.userAvatar}
                     />
-                    {!isCollapsed && <span className={styles.userName}>{user.name}</span>}
+                    {!isCollapsed && <span className={styles.userName}>{user.signInDetails?.loginId}</span>}
                     {isDropdownOpen && (
                         <div className={styles.dropdown}>
                             <Link href="/profile" className={styles.dropdownItem}>
-                                <Settings className={styles.dropdownIcon} />
+                                <Settings className={styles.dropdownIcon}/>
                                 <span>个人中心</span>
                             </Link>
-                            <button className={styles.dropdownItem} onClick={() => console.log('Logout')}>
-                                <LogOut className={styles.dropdownIcon} />
+                            <button className={styles.dropdownItem} onClick={signOut}>
+                                <LogOut className={styles.dropdownIcon}/>
                                 <span>退出</span>
                             </button>
                         </div>

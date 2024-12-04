@@ -1,0 +1,16 @@
+/* styles/KnowledgeBase.module.css */
+.container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.description {
+    font-size: 1.2rem;
+    color: #666;
+}

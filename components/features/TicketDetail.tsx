@@ -1,12 +1,28 @@
+// components/features/TicketDetail.tsx
 import type { Schema } from "@/amplify/data/resource";
 import styles from '@/styles/features/TicketDetail.module.css';
 import { StorageImage } from "@aws-amplify/ui-react-storage";
+import ImageViewerModal from '@/components/features/ImageViewerModal';
+import { useState } from 'react';
+import AIHelper from "@/components/features/AIHelper";
 
 interface TicketDetailProps {
     ticket: Schema["Ticket"]["type"];
 }
 
 export default function TicketDetail({ ticket }: TicketDetailProps) {
+    const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+    const [selectedImagePath, setSelectedImagePath] = useState('');
+
+    const openImageViewer = (imagePath: string) => {
+        setSelectedImagePath(imagePath);
+        setIsImageViewerOpen(true);
+    };
+
+    const closeImageViewer = () => {
+        setIsImageViewerOpen(false);
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.detail}>
@@ -32,15 +48,26 @@ export default function TicketDetail({ ticket }: TicketDetailProps) {
                     <div className={styles.imagesContainer}>
                         {ticket.imagePaths?.map((imagePath, index) => (
                             imagePath ? (
-                                <StorageImage key={index} alt="ticket image" path={imagePath} />
+                                <StorageImage
+                                    key={index}
+                                    alt="ticket image"
+                                    path={imagePath}
+                                    onClick={() => openImageViewer(imagePath)}
+                                    className={styles.imageThumbnail}
+                                />
                             ) : null
                         ))}
                     </div>
                 </div>
             </div>
             <div className={styles.textAreaContainer}>
-                <textarea className={styles.textArea} placeholder="Enter your notes here..."></textarea>
+                <AIHelper />
             </div>
+            <ImageViewerModal
+                isOpen={isImageViewerOpen}
+                onClose={closeImageViewer}
+                imagePath={selectedImagePath}
+            />
         </div>
     );
 }
