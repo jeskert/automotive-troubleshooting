@@ -1,0 +1,16 @@
+<model>
+    {
+        "make": "XXXX",
+        "model": "XXXX",
+        "year": XXXX,
+        "state": "XX",
+        "damage": "Right Front",
+        "repair_cost": XXXXX,
+        "damage_severity": "moderate",
+        "damage_description": "Dent and scratches on the right fender",
+        "parts_for_repair": "add a list of parts that need to be replaced/repaired",
+        "labor_hours": XX,
+        "parts_cost": XXXX,
+        "labor_cost"
+    }
+</model>

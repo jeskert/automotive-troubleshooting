@@ -1,0 +1,6 @@
+<criteria>
+    repair_cost < 500 = light
+    repair_cost > 500 AND < 1000 = moderate
+    repair_cost > 1000 AND < 2000 = severe
+    repair_cost > 2000 = major
+</criteria>

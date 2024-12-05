@@ -9,6 +9,9 @@ import {generateClient} from "aws-amplify/data";
 import {Play, Trash2} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import AddKnowledgeModal from "@/components/features/AddKnowledgeModal";
+import {Nullable} from "@aws-amplify/data-schema";
+import { downloadData } from 'aws-amplify/storage';
+
 
 Amplify.configure(outputs);
 
@@ -24,13 +27,99 @@ export default function IngestionTaskList() {
         client.models.IngestionTask.delete({id});
     }
 
-    function startTask(id: string | null | undefined) {
-        if (!id) return;
-        client.models.IngestionTask.update({
-            id,
-            status: "IN_PROGRESS",
-        });
+    async function processImage(imageUrl: string) {
+        try {
+            const { body } = await downloadData({
+                path: imageUrl
+            }).result;
+            const blob = await body.blob();
+            const base64String = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    if (reader.result) {
+                        const base64Data = reader.result.toString().split(',')[1]; // Remove data URL prefix
+                        resolve(base64Data);
+                    } else {
+                        reject(new Error('Failed to read image data'));
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+
+            // Call Bedrock for image analysis and embedding generation
+            const bedrockResponse = await fetch('/api/analyze-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: base64String, imageUrl: imageUrl }),
+            });
+            
+            // const embeddings = await bedrockResponse.json();
+            //
+            // // Save embeddings to OpenSearch
+            // await fetch('/api/save-embeddings', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         imageUrl,
+            //         embeddings
+            //     }),
+            // });
+
+            return true;
+        } catch (error) {
+            console.error('Error processing image:', error);
+            return false;
+        }
     }
+
+    async function startTask(id: string | null | undefined) {
+        if (!id) return;
+
+        try {
+            await client.models.IngestionTask.update({
+                id,
+                status: "IN_PROGRESS",
+            });
+
+            const ingestionTask = await client.models.IngestionTask.get({ id });
+            if (!ingestionTask || !ingestionTask.data || !ingestionTask.data.imagePaths) {
+                throw new Error('No images found for ingestionTask');
+            }
+
+            // 过滤掉 imagePaths 中的 null 和 undefined 值
+            const validImagePaths = ingestionTask.data.imagePaths.filter((imageUrl: Nullable<string>) => imageUrl !== null && imageUrl !== undefined) as string[];
+
+            // Process each image in the ingestionTask
+            const results = await Promise.all(
+                validImagePaths.map(imageUrl => processImage(imageUrl))
+            );
+
+            // If all images processed successfully, update status to COMPLETED
+            if (results.every(result => result === true)) {
+                await client.models.IngestionTask.update({
+                    id,
+                    status: "COMPLETED",
+                });
+            } else {
+                await client.models.IngestionTask.update({
+                    id,
+                    status: "ERROR",
+                });
+            }
+        } catch (error) {
+            console.error('Error in startTask:', error);
+            await client.models.IngestionTask.update({
+                id,
+                status: "ERROR",
+            });
+        }
+    }
+
 
     function listIngestionTask() {
         client.models.IngestionTask.observeQuery().subscribe({
