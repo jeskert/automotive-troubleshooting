@@ -8,7 +8,7 @@ export default function AIHelper() {
         useAIGeneration("generateAutomotiveDamageProcessing");
 
     const handleClick = async () => {
-        generateAutomotiveDamageProcessing();
+        // generateAutomotiveDamageProcessing();
     };
 
     return (
