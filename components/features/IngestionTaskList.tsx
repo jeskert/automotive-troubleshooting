@@ -1,4 +1,3 @@
-// components/features/IngestionTaskList.tsx
 'use client'
 
 import type {Schema} from "@/amplify/data/resource";
@@ -10,8 +9,7 @@ import {Play, Trash2} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import AddKnowledgeModal from "@/components/features/AddKnowledgeModal";
 import {Nullable} from "@aws-amplify/data-schema";
-import { downloadData } from 'aws-amplify/storage';
-
+import {downloadData} from 'aws-amplify/storage';
 
 Amplify.configure(outputs);
 
@@ -22,6 +20,7 @@ export default function IngestionTaskList() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Schema["IngestionTask"]["type"] | null>(null);
 
+
     function deleteTask(id: string | null | undefined) {
         if (!id) return;
         client.models.IngestionTask.delete({id});
@@ -29,7 +28,7 @@ export default function IngestionTaskList() {
 
     async function processImage(imageUrl: string) {
         try {
-            const { body } = await downloadData({
+            const {body} = await downloadData({
                 path: imageUrl
             }).result;
             const blob = await body.blob();
@@ -46,30 +45,28 @@ export default function IngestionTaskList() {
                 reader.onerror = reject;
                 reader.readAsDataURL(blob);
             });
-
-            // Call Bedrock for image analysis and embedding generation
-            const bedrockResponse = await fetch('/api/analyze-image', {
+            const response = await fetch('/api/analyze-image', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ image: base64String, imageUrl: imageUrl }),
+                body: JSON.stringify({image: base64String}),
             });
-            
-            // const embeddings = await bedrockResponse.json();
-            //
-            // // Save embeddings to OpenSearch
-            // await fetch('/api/save-embeddings', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         imageUrl,
-            //         embeddings
-            //     }),
-            // });
 
+            const metadata = await response.json();
+            const jsonString = JSON.stringify(metadata);
+            const data2 = JSON.parse(jsonString);
+            const jsonBytes = new TextEncoder().encode(JSON.stringify(data2));
+            const base64Bytes = Buffer.from(jsonBytes).toString('base64');
+            const encodedJson = Buffer.from(base64Bytes, 'base64').toString();
+            const embeddingResponse = await fetch('/api/save-embeddings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({metadataString: encodedJson, metadata: metadata, image: base64String}),
+            });
+            metadata.s3_location = imageUrl;
             return true;
         } catch (error) {
             console.error('Error processing image:', error);
@@ -86,20 +83,18 @@ export default function IngestionTaskList() {
                 status: "IN_PROGRESS",
             });
 
-            const ingestionTask = await client.models.IngestionTask.get({ id });
+            const ingestionTask = await client.models.IngestionTask.get({id});
             if (!ingestionTask || !ingestionTask.data || !ingestionTask.data.imagePaths) {
                 throw new Error('No images found for ingestionTask');
             }
 
-            // 过滤掉 imagePaths 中的 null 和 undefined 值
             const validImagePaths = ingestionTask.data.imagePaths.filter((imageUrl: Nullable<string>) => imageUrl !== null && imageUrl !== undefined) as string[];
 
-            // Process each image in the ingestionTask
+
             const results = await Promise.all(
                 validImagePaths.map(imageUrl => processImage(imageUrl))
             );
 
-            // If all images processed successfully, update status to COMPLETED
             if (results.every(result => result === true)) {
                 await client.models.IngestionTask.update({
                     id,

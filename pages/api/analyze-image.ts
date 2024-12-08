@@ -20,12 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const {image, imageUrl} = req.body;
+        const {image} = req.body;
         const metadataString = await createJsonMetadata(image, instructionModel1);
         const metadata = JSON.parse(metadataString);
-        metadata.s3Location = imageUrl;
-        const metadataBase64 = Buffer.from(metadataString).toString('base64');
-        const embedding = await getEmbeddings(image, metadataBase64);
         res.status(200).json(metadata);
     } catch (error) {
         console.error('Error calling Bedrock:', error);
@@ -75,26 +72,6 @@ async function createJsonMetadata(encodedImage: string, instruction: string) {
     const decodedResponseBody = new TextDecoder().decode(apiResponse.body)
     const responseBody = JSON.parse(decodedResponseBody);
     return responseBody.content[0].text;
-}
-
-async function getEmbeddings(encodedImage: string, encodedJson: string) {
-    const payload = {
-        "inputText": encodedJson,
-        "inputImage": encodedImage,
-        "embeddingConfig": {
-            "outputEmbeddingLength": 1024
-        }
-    }
-
-    const command = new InvokeModelCommand(
-        {
-            modelId: "amazon.titan-embed-image-v1",
-            contentType: "application/json",
-            body: JSON.stringify(payload),
-        }
-    )
-    const apiResponse = await bedrockClient.send(command)
-    return apiResponse.body
 }
 
 

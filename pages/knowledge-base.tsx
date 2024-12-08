@@ -2,8 +2,7 @@
 
 import MainLayout from '@/components/layout/MainLayout'
 import {Plus} from "lucide-react";
-import CreateTicketModal from "@/components/features/CreateTicketModal";
-import {useState} from "react";
+import React, {useState} from "react";
 import AddKnowledgeModal from "@/components/features/AddKnowledgeModal";
 import IngestionTaskList from "@/components/features/IngestionTaskList";
 
@@ -23,7 +22,7 @@ export default function KnowledgeBase() {
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600 active:bg-blue-700 transition duration-200"
                 >
                     <Plus size={20}/>
-                    添加图片
+                    创建图片处理任务
                 </button>
             </div>
 
